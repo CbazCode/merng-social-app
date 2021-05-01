@@ -29,7 +29,8 @@ const postResolvers = {
     },
     Mutation:{
         //Ahora como context tiene al requestBody podemos utilizarlo aqui
-		async createPost(_,{body},context){
+		async createPost(parent,{body},context){
+			console.log('This is parent in mutation start: ',parent)
 			const user = checkAuth(context);
 
 			if(body.trim()===''){
@@ -45,10 +46,10 @@ const postResolvers = {
 
 			const post = await newPost.save();
 			
-			// context.pubsub.publish('NEW_POST',{
-			// 	newPost:post
-			// })
-
+			context.pubsub.publish('NEW_POST',{
+				newPost:post
+			})
+			console.log('This is parent in mutation end: ',parent)
 			return post;
 		},
 		async deletePost(_,{postId},context){
@@ -66,6 +67,11 @@ const postResolvers = {
 			}
 		}
 	},
+	Subscription:{
+		newPost:{
+			subscribe: (_,__,{pubsub})=>pubsub.asyncIterator('NEW_POST')
+		}
+	}
 }
 
 export default postResolvers
