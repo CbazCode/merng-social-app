@@ -6,6 +6,8 @@ const resolvers = {
     //Cada vez que una query, mutation o subscription retorne un post va a pasar por aqui
     Post:{
         likeCount:(parent)=> {
+            //parent es el resultado del resolver previo que manipulo a este tipo de dato.
+            //Se manipulo el post manipulado por algun resolver y se actualizo el campo likeCount
             //console.log('this the parent: ', parent);
             return parent.likes.length
         }
@@ -27,6 +29,7 @@ const resolvers = {
         ...commetsResolver.Mutation
     
     },
+    //Es como sockets
     Subscription: {
         ...postResolvers.Subscription
     }
