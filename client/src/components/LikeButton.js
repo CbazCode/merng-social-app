@@ -13,7 +13,8 @@ const LikeButton = ({ user, post: { id, likeCount, likes } }) => {
 			setLiked(false);
 		}
 	}, [user, likes]);
-
+	
+	// no se hace cositas con el proxy porque apollo identifica al like por el unico campo ID DEL POST q le estamos pasando actualizando su cache respectivo inmediatamente
 	const [likePost] = useMutation(LIKE_POST_MUTATION, {
 		variables: { postId: id },
 	});

@@ -30,7 +30,6 @@ const postResolvers = {
     Mutation:{
         //Ahora como context tiene al requestBody podemos utilizarlo aqui
 		async createPost(parent,{body},context){
-			console.log('This is parent in mutation start: ',parent)
 			const user = checkAuth(context);
 
 			if(body.trim()===''){
@@ -49,7 +48,6 @@ const postResolvers = {
 			context.pubsub.publish('NEW_POST',{
 				newPost:post
 			})
-			console.log('This is parent in mutation end: ',parent)
 			return post;
 		},
 		async deletePost(_,{postId},context){

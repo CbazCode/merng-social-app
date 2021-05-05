@@ -13,10 +13,15 @@ if (localStorage.getItem('jwtToken')) {
 	}
 }
 
+//el contenido del context es como un placeholder de lo que se pondras en el value del provider: buenas practicas
 const AuthContext = createContext({
 	user: null,
-	login: (userData) => {},
-	logout: () => {},
+	login: (userData) => { 
+		//...
+	},
+	logout: () => { 
+		//...
+	},
 });
 
 function authReducer(state, action) {

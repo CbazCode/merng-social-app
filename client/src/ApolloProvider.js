@@ -10,6 +10,7 @@ const httpLink = createHttpLink({
 	uri: 'http://localhost:5000',
 });
 
+//setContext: funciona como un middleware establece el context de un request y la modifica como uno quiera antes de que la solicitud de este proceso se reenvíe hacia el enlace HTTP
 const authLink = setContext(() => {
 	const token = localStorage.getItem('jwtToken');
 	return {

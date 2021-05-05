@@ -13,11 +13,15 @@ const PostForm = () => {
 
 	const [createPost, { error }] = useMutation(CREATE_POST_MUTATION, {
 		variables: value,
+		
 		update: (proxy, result) => {
+			//hacemos esto para mostrar la mutacion en el front porque como apollo lo toma de cache al no actulizarse no se muestra el cambio
+			//accesamos directo a la cache para actualizar la cache con cada post creado, toda la cache que se tiene hasta le momento lo almacenamos en data
 			const data = proxy.readQuery({
 				query: FETCH_POST_QUERY,
 			});
 
+			//almacenamos en cache el nuevo post
 			data.getPosts.push(result.data.createPost);
 			proxy.writeQuery({ query: FETCH_POST_QUERY, data });
 			value.body = '';

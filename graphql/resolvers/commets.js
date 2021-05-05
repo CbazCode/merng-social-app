@@ -27,7 +27,7 @@ const commetsResolver = {
 			}
 		},
         deleteComment: async (_,{postId,commentId},context) =>{
-            console.log(context);
+            // console.log(context);
             const {username} = checkAuth(context);
             
             const post = await Post.findById(postId);

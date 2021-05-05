@@ -13,9 +13,9 @@ const resolvers = {
         }
             ,
         commentCount:(parent, args, context, info)=>{ 
-            console.log('this the parent: ', parent);
-            console.log('this the args: ', args);
-            console.log('this the info: ', info);
+            // console.log('this the parent: ', parent);
+            // console.log('this the args: ', args);
+            // console.log('this the info: ', info);
             return parent.comments.length
         }
     },

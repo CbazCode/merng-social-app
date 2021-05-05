@@ -4,23 +4,31 @@ import React, { useState } from 'react';
 import { Button, Confirm, Icon } from 'semantic-ui-react';
 import { FETCH_POST_QUERY } from '../util/graphql';
 import MyPopup from '../util/MyPopup';
+import { useHistory } from "react-router-dom"
 
 const DeleteButton = ({ postId, commentId, callback }) => {
+	const history = useHistory()
 	const [confirmOpen, setConfirmOpen] = useState(false);
 
 	const mutation = commentId ? DELETE_COMMENT_MUTATION : DELETE_POST_MUTATION;
 	const [deletePostOrMutation] = useMutation(mutation, {
-		variables: {
-			postId,
-			commentId,
-		},
-		update(proxy) {
+		update: (proxy, result) => {
 			setConfirmOpen(false);
+			// remove post from cache (se podria decir que cuando se trata de algun valor nuevo o que se va a quitar de la cache se hace esto pero si solo se van a actualizar una de sus propiedades y son identificadas por el ID del objeto papa no es necesario hacer lo siguiete)
 			if (!commentId) {
 				const data = proxy.readQuery({
 					query: FETCH_POST_QUERY,
 				});
-				data.getPosts.push(data);
+				
+				console.log('data antes:', data.getPosts)
+				// FIXME : no remueve de cache funciona porque genera error
+				// data.getPosts.push(data);
+				data.getPosts = data.getPosts.filter( (p) => {
+					console.log(p.id)
+					console.log(postId)
+					return p.id !== postId
+				})
+				console.log('data despues:', data.getPosts)
 				proxy.writeQuery({ query: FETCH_POST_QUERY, data });
 			}
 
@@ -28,8 +36,24 @@ const DeleteButton = ({ postId, commentId, callback }) => {
 				callback();
 			}
 		},
-		refetchQueries: [{ query: FETCH_POST_QUERY }],
+		variables: {
+			postId,
+			commentId,
+		},
+		//refetchQueries: [{ query: FETCH_POST_QUERY }],
 	});
+
+	function deletedPostCallback() {
+		deletePostOrMutation()
+			.then(() => {
+				if(!commentId){
+					history.push('/')
+				}
+			})
+			.catch((e) => {
+				console.log(e)
+			});
+	}
 	return (
 		<>
 			<MyPopup content={commentId ? 'Delete comment' : 'Delete post'}>
@@ -38,7 +62,7 @@ const DeleteButton = ({ postId, commentId, callback }) => {
 				</Button>
 			</MyPopup>
 
-			<Confirm open={confirmOpen} onCancel={() => setConfirmOpen(false)} onConfirm={deletePostOrMutation} />
+			<Confirm open={confirmOpen} onCancel={() => setConfirmOpen(false)} onConfirm={deletedPostCallback} />
 		</>
 	);
 };
